@@ -1,8 +1,7 @@
-using System.Net;
-using System.Security.Claims;
 using aspnetcore9_jwt.Db;
-using Microsoft.AspNetCore.Authentication;
+using aspnetcore9_jwt.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +11,8 @@ builder.Services.AddSqlite<CoreDbContext>(connectionString);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 builder.Services.AddAuthentication(options =>
@@ -23,7 +24,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
-    options.TokenValidatioParametsr = new TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
         ValidAudience = builder.Configuration["JwtConfig:Audience"],
